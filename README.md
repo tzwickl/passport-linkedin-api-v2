@@ -5,10 +5,6 @@ A simple [Passport](http://passportjs.org/) strategy for LinkedIn OAuth2 API Ver
   npm install passport-linkedin-api-v2
 
 ## Usage
-1. Register the strategy with `passport.use`
-2. Call `/auth/linkedin` which calls the function `authenticateUser`
-3. Enter credentials for LinkedIn in browser
-4. Lite Profile is returned from LinkedIn
 
 ~~~typescript
 import { LinkedinAuth } from 'passport-linkedin-api-v2';
