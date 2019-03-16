@@ -1,0 +1,24 @@
+{
+  "name": "passport-linkedin-api-v2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "author": "Thomas Zwickl",
+  "devDependencies": {
+    "typescript": "^3.4.0-rc",
+    "@types/request": "^2.48.1",
+    "@types/passport-oauth2": "^1.4.8",
+    "@types/winston": "^2.4.4"
+  },
+  "dependencies": {
+    "passport-oauth2": "^1.5.0",
+    "request": "^2.88.0",
+    "winston": "^3.2.1"
+  }
+}
