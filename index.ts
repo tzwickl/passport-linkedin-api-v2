@@ -1,10 +1,7 @@
 import OAuth2Strategy from 'passport-oauth2';
-import logger from './logger';
 import * as request from 'request';
 import { IUser } from "./IUser";
 import { IncomingMessage } from "http";
-
-const LOGGER = logger.getLogger('auth');
 
 const LI_OAUTH = 'https://www.linkedin.com/oauth/v2';
 const AUTH = LI_OAUTH + '/authorization';
