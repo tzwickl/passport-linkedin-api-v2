@@ -1,13 +1,13 @@
 {
   "name": "passport-linkedin-api-v2",
   "version": "1.0.1",
-  "description": "",
+  "description": "A simple Passport strategy for LinkedIn OAuth2 API Version 2.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc"
   },
-  "keywords": [],
+  "keywords": ["Passport", "LinkedIn", "LinkedIn API v2", "oAuth2", "API v2"],
   "license": "MIT",
   "author": "Thomas Zwickl",
   "devDependencies": {
@@ -20,5 +20,9 @@
     "passport-oauth2": "^1.5.0",
     "request": "^2.88.0",
     "winston": "^3.2.1"
+  },
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/tzwickl/passport-linkedin-api-v2"
   }
 }
