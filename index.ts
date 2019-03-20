@@ -11,6 +11,8 @@ const LI_V2 = 'https://api.linkedin.com/v2';
 const ME = LI_V2 + '/me';
 const EMAIL = LI_V2 + '/emailAddress?q=members&projection=(elements*(handle~))';
 
+export * from './IUser';
+
 export class LinkedinAuth extends OAuth2Strategy {
   public constructor(options: any, verify: OAuth2Strategy.VerifyFunction) {
     const opts = Object.assign(options, {
