@@ -79,13 +79,13 @@ Register the strategy
 ~~~javascript
 var passport = require('passport');
 var LinkedinAuth = require('passport-linkedin-api-v2').LinkedinAuth;
-
+ 
 passport.use('linkedin', new LinkedinAuth({
-  clientID: LINKEDIN_KEY,
-  clientSecret: LINKEDIN_SECRET,
-  callbackURL: "http://127.0.0.1:3000/auth/linkedin/callback",
+  clientID: '***REMOVED***',
+  clientSecret: '***REMOVED***',
+  callbackURL: "https://empm3uwbt483.runkit.sh/auth/linkedin/callback",
   scope: ['r_emailaddress', 'r_liteprofile'],
-}, function (accessToken: any, refreshToken: any, profile: any, done: any) {
+}, function (accessToken, refreshToken, profile, done) {
   // asynchronous verification, for effect...
   process.nextTick(function () {
     // To keep the example simple, the user's LinkedIn profile is returned to
@@ -107,7 +107,7 @@ app.get('/auth/linkedin', passport.authenticate('linkedin', { state: 'SOME STATE
 ~~~
 the login callback:
 ~~~javascript
-this.app.get('/auth/linkedin/callback', passport.authenticate('linkedin', {
+app.get('/auth/linkedin/callback', passport.authenticate('linkedin', {
   successRedirect: '/',
   failureRedirect: '/login',
 }));
