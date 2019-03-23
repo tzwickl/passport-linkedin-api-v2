@@ -81,9 +81,9 @@ var passport = require('passport');
 var LinkedinAuth = require('passport-linkedin-api-v2').LinkedinAuth;
  
 passport.use('linkedin', new LinkedinAuth({
-  clientID: '***REMOVED***',
-  clientSecret: '***REMOVED***',
-  callbackURL: "https://empm3uwbt483.runkit.sh/auth/linkedin/callback",
+  clientID: CLIENT_ID,
+  clientSecret: CLIENT_SECRET,
+  callbackURL: "http://127.0.0.1:3000/auth/linkedin/callback",
   scope: ['r_emailaddress', 'r_liteprofile'],
 }, function (accessToken, refreshToken, profile, done) {
   // asynchronous verification, for effect...
