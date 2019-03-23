@@ -1,6 +1,6 @@
 {
   "name": "passport-linkedin-api-v2",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A simple Passport strategy for LinkedIn OAuth2 API Version 2.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

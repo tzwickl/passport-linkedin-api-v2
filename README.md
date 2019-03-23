@@ -5,12 +5,14 @@ A simple [Passport](http://passportjs.org/) strategy for LinkedIn OAuth2 API Ver
   npm install passport-linkedin-api-v2
 
 ## Usage
+### Typescript
 
 ~~~typescript
 import * as passport from 'passport';
 import { IUser, LinkedinAuth } from 'passport-linkedin-api-v2';
 
 class LinkedInAuthController {
+  // Register the strategy
   public initialize() {
     passport.use('linkedin', this.getStrategy());
     return passport.initialize();
@@ -70,6 +72,45 @@ class LinkedInAuthController {
 
 export const linkedInAuthController = new LinkedInAuthController();
 export const authenticateUser = linkedInAuthController.authenticateUser;
+~~~
+
+### Javascript
+Register the strategy
+~~~javascript
+var passport = require('passport');
+var LinkedinAuth = require('passport-linkedin-api-v2').LinkedinAuth;
+
+passport.use('linkedin', new LinkedinAuth({
+  clientID: LINKEDIN_KEY,
+  clientSecret: LINKEDIN_SECRET,
+  callbackURL: "http://127.0.0.1:3000/auth/linkedin/callback",
+  scope: ['r_emailaddress', 'r_liteprofile'],
+}, function (accessToken: any, refreshToken: any, profile: any, done: any) {
+  // asynchronous verification, for effect...
+  process.nextTick(function () {
+    // To keep the example simple, the user's LinkedIn profile is returned to
+    // represent the logged-in user. In a typical application, you would want
+    // to associate the LinkedIn account with a user record in your database,
+    // and return that user instead.
+    return done(null, profile);
+  });
+}));
+~~~
+and then authenticate as:
+~~~javascript
+app.use(passport.initialize());
+app.get('/auth/linkedin', passport.authenticate('linkedin', { state: 'SOME STATE' }),
+  function (req, res) {
+    // The request will be redirected to LinkedIn for authentication, so this
+    // function will not be called.
+  });
+~~~
+the login callback:
+~~~javascript
+this.app.get('/auth/linkedin/callback', passport.authenticate('linkedin', {
+  successRedirect: '/',
+  failureRedirect: '/login',
+}));
 ~~~
 
 See [this](https://docs.microsoft.com/en-us/linkedin/consumer/) for details on LinkedIn API v2.
