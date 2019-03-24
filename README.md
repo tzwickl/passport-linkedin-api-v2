@@ -2,7 +2,7 @@ A simple [Passport](http://passportjs.org/) strategy for LinkedIn OAuth2 API Ver
 
 ## Install
 
-  npm install passport-linkedin-api-v2
+  [npm install passport-linkedin-api-v2](https://www.npmjs.com/package/passport-linkedin-api-v2)
 
 ## Usage
 ### Typescript
