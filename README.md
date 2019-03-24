@@ -84,7 +84,7 @@ passport.use('linkedin', new LinkedinAuth({
   clientID: CLIENT_ID,
   clientSecret: CLIENT_SECRET,
   callbackURL: "http://127.0.0.1:3000/auth/linkedin/callback",
-  scope: ['r_emailaddress', 'r_liteprofile'],
+  scope: ['r_emailaddress', 'r_liteprofile', 'w_member_social'],
 }, function (accessToken, refreshToken, profile, done) {
   // asynchronous verification, for effect...
   process.nextTick(function () {
