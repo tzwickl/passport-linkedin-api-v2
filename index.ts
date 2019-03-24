@@ -1,7 +1,6 @@
 import OAuth2Strategy from 'passport-oauth2';
 import * as request from 'request';
 import { IUser } from "./IUser";
-import { IncomingMessage } from "http";
 
 const LI_OAUTH = 'https://www.linkedin.com/oauth/v2';
 const AUTH = LI_OAUTH + '/authorization';
@@ -18,7 +17,7 @@ export class LinkedinAuth extends OAuth2Strategy {
     const opts = Object.assign(options, {
       authorizationURL: AUTH,
       tokenURL: TOKEN,
-      customHeaders: { 'x-li-format': 'json' },
+      customHeaders: {'x-li-format': 'json'},
     });
     super(opts, verify);
   }
@@ -53,9 +52,7 @@ export class LinkedinAuth extends OAuth2Strategy {
    */
   public static getLiteProfile(accessToken: string,
                                done: (err?: (Error | null), profile?: any) => void) {
-    request.get(
-      ME,
-      { headers: LinkedinAuth.getHeader(accessToken) },
+    request.get(ME, {headers: LinkedinAuth.getHeader(accessToken)},
       (error: any, response: request.Response, body: any) => {
         if (error) {
           return done(new OAuth2Strategy.InternalOAuthError('failed to fetch user profile', error));
@@ -85,7 +82,7 @@ export class LinkedinAuth extends OAuth2Strategy {
    * @param done Callback function.
    */
   public static getUserEmail(accessToken: string, done: (err?: Error | null, email?: any) => void) {
-    request.get(EMAIL, { headers: LinkedinAuth.getHeader(accessToken) },
+    request.get(EMAIL, {headers: LinkedinAuth.getHeader(accessToken)},
       (error: any, response: request.Response, body: any) => {
         if (error) {
           return done(new OAuth2Strategy.InternalOAuthError('failed to fetch user email', error));
