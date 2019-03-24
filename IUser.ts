@@ -7,4 +7,7 @@ export interface IUser {
   lastName: string,
   firstName: string,
   profilePicture: string,
+  profilePictures: string[],
+  _profileRaw: string,
+  _profileJson: any,
 }

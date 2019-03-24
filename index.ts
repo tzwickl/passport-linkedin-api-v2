@@ -8,7 +8,7 @@ const AUTH = LI_OAUTH + '/authorization';
 const TOKEN = LI_OAUTH + '/accessToken';
 
 const LI_V2 = 'https://api.linkedin.com/v2';
-const ME = LI_V2 + '/me';
+const ME = LI_V2 + '/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams))';
 const EMAIL = LI_V2 + '/emailAddress?q=members&projection=(elements*(handle~))';
 
 export * from './IUser';
@@ -23,51 +23,17 @@ export class LinkedinAuth extends OAuth2Strategy {
     super(opts, verify);
   }
 
+  /**
+   * Fetch user profile once authenticated with LI.
+   * @param accessToken The access token for LI.
+   * @param done Callback function.
+   */
   public userProfile(accessToken: string, done: (err?: Error | null, profile?: any) => void): void {
     if (accessToken == null) {
       return done(new OAuth2Strategy.InternalOAuthError('failed to fetch access token', null));
     }
     this._oauth2.setAccessTokenName('oauth2_access_token');
-    this._oauth2.get(ME, accessToken, (err: {statusCode: number, data?: any}, body?: string | Buffer, res?: IncomingMessage) => {
-      if (err || body == null) {
-        return done(new OAuth2Strategy.InternalOAuthError('failed to fetch user profile', err));
-      }
-      try {
-        const json = JSON.parse(body.toString());
-        LinkedinAuth.handleLiResponse(json);
-        done(null, json);
-      } catch (e) {
-        done(e);
-      }
-    });
-  }
-
-  public static getLiteProfile(accessToken: string,
-                               done: (err?: (Error | null), profile?: any) => void) {
-    request.get(
-      ME + '?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams))',
-      { headers: LinkedinAuth.getHeader(accessToken) },
-      (error: any, response: request.Response, body: any) => {
-        if (error) {
-          return done(new OAuth2Strategy.InternalOAuthError('failed to fetch user profile', error));
-        }
-
-        try {
-          const json = JSON.parse(body);
-          LinkedinAuth.handleLiResponse(json);
-          LinkedinAuth.getUserEmail(accessToken, (err, email) => {
-            if (err) {
-              return done(
-                new OAuth2Strategy.InternalOAuthError('failed to fetch user email', error));
-            }
-            json.email = email;
-            json.accessToken = accessToken;
-            done(null, LinkedinAuth.parseLinkedInProfile(json));
-          });
-        } catch (e) {
-          done(e);
-        }
-      });
+    LinkedinAuth.getLiteProfile(accessToken, done);
   }
 
   /**
@@ -81,12 +47,44 @@ export class LinkedinAuth extends OAuth2Strategy {
   }
 
   /**
+   * Get Lite profile of user.
+   * @param accessToken The access token to request the lite profile.
+   * @param done Callback function.
+   */
+  public static getLiteProfile(accessToken: string,
+                               done: (err?: (Error | null), profile?: any) => void) {
+    request.get(
+      ME + '?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams))',
+      { headers: LinkedinAuth.getHeader(accessToken) },
+      (error: any, response: request.Response, body: any) => {
+        if (error) {
+          return done(new OAuth2Strategy.InternalOAuthError('failed to fetch user profile', error));
+        }
+        try {
+          const json = JSON.parse(body);
+          LinkedinAuth.handleLiResponse(json);
+          LinkedinAuth.getUserEmail(accessToken, (err, email) => {
+            if (err) {
+              return done(
+                new OAuth2Strategy.InternalOAuthError('failed to fetch user email', error));
+            }
+            json.email = email;
+            json.accessToken = accessToken;
+            done(null, LinkedinAuth.parseLinkedInProfile(json, body));
+          });
+        } catch (e) {
+          done(e);
+        }
+      });
+  }
+
+
+  /**
    * Returns the email of the user.
    * @param accessToken The access token to request the email.
    * @param done Callback function.
    */
-  public static getUserEmail(accessToken: string,
-                             done: (err?: Error | null, email?: any) => void) {
+  public static getUserEmail(accessToken: string, done: (err?: Error | null, email?: any) => void) {
     request.get(EMAIL, { headers: LinkedinAuth.getHeader(accessToken) },
       (error: any, response: request.Response, body: any) => {
         if (error) {
@@ -106,8 +104,9 @@ export class LinkedinAuth extends OAuth2Strategy {
   /**
    * Parses and extracts all available information from the LI profile.
    * @param linkedInProfile The LI profile.
+   * @param raw The raw LI profile.
    */
-  private static parseLinkedInProfile(linkedInProfile: any): IUser {
+  private static parseLinkedInProfile(linkedInProfile: any, raw: string): IUser {
     let email = '';
     if (linkedInProfile.email.elements && linkedInProfile.email.elements.length > 0 &&
       linkedInProfile.email.elements[0]['handle~'] &&
@@ -126,6 +125,7 @@ export class LinkedinAuth extends OAuth2Strategy {
     }
 
     let profilePicture = '';
+    let profilePictures = [];
 
     if (linkedInProfile.profilePicture && linkedInProfile.profilePicture['displayImage~'] &&
       linkedInProfile.profilePicture['displayImage~'].elements &&
@@ -134,6 +134,9 @@ export class LinkedinAuth extends OAuth2Strategy {
 
       if (image.identifiers && image.identifiers.length > 0) {
         profilePicture = image.identifiers[0].identifier;
+        for (let i = 0; i < image.identifiers.length; i++) {
+          profilePictures.push(image.identifiers[i]);
+        }
       }
     }
 
@@ -143,6 +146,9 @@ export class LinkedinAuth extends OAuth2Strategy {
       lastName,
       firstName,
       profilePicture,
+      profilePictures,
+      _profileJson: linkedInProfile,
+      _profileRaw: raw,
       linkedIn: {
         accessToken: linkedInProfile.accessToken,
         id: linkedInProfile.id,

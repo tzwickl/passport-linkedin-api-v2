@@ -29,7 +29,7 @@ class LinkedInAuthController {
 
     return new LinkedinAuth(params,
       (accessToken: string, refreshToken: string, profile: any, done: any) => {
-        // This function is called once a user successfully authenticated
+        // This function is called once a user successfully authenticated and returns the lite profile
         profile.accessToken = accessToken;
         done(profile);
       });
@@ -55,18 +55,6 @@ class LinkedInAuthController {
       }
       const user = await this.getUser(profile.accessToken);
     })(req, res);
-  };
-
-  // Return LiteProfile of user
-  private getUser = (accessToken: string): Promise<IUser> => {
-    return new Promise<IUser>((resolve, reject) => {
-      LinkedinAuth.getLiteProfile(accessToken, (err, profile) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve(profile);
-      });
-    });
   };
 }
 
