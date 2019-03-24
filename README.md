@@ -92,6 +92,15 @@ passport.use('linkedin', new LinkedinAuth({
     // represent the logged-in user. In a typical application, you would want
     // to associate the LinkedIn account with a user record in your database,
     // and return that user instead.
+    
+    // To get the liteProfile and the email
+    linkedinStrat.getUserEmail(accessToken, (err, email) => {
+      console.log(email)
+    })
+    linkedinStrat.getLiteProfile(accessToken, (err, liteprofile) => {
+      console.log(liteprofile)
+    })
+    
     return done(null, profile);
   });
 }));
